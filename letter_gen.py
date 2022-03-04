@@ -4,7 +4,8 @@ import docx
 import pandas as pd
 import os
 
-path_to_save = os.path.abspath("F:/Documents/Real Estate/Letter Campaign/3_2_22")
+#path_to_save = os.path.abspath("F:/Documents/Real Estate/Letter Campaign/3_2_22")
+path_to_save = os.path.abspath("C:/Users/alast/Documents/Real Estate/saved_letters")
 
 def secondNameValid(name):
     # Check if this cell value is null
@@ -30,29 +31,40 @@ if __name__ == "__main__":
     font.name = 'Lucida Handwriting'
     font.size = docx.shared.Pt(14)
 
-    fileData = None
-    with open('letter_template.txt') as f:
-        fileData = f.read()
+    # fileData = None
+    # with open('letter_template.txt') as f:
+    #     fileData = f.read()
 
-    fileData = fileData.replace("%%%", "Augusto")
-    fileData = fileData.replace("###", "Amanda")
-    fileData = fileData.replace("$$$", "3177 140th street")
-    print(fileData)
+    # fileData = fileData.replace("%%%", "Augusto")
+    # fileData = fileData.replace("||", "and")
+    # fileData = fileData.replace("###", "Amanda,")
+    # fileData = fileData.replace("$$$", "3177 140th street")
+    # print(fileData)
 
-    paragraph = doc.add_paragraph(fileData)
-    doc.save(os.path.join(path_to_save, "temp.docx"))
+    #paragraph = doc.add_paragraph(fileData)
+    #doc.save(os.path.join(path_to_save, "temp.docx"))
 
     for idx, (name, propAddress) in enumerate(zip(info.iloc[:, 0], info.iloc[:, 1])):
+
+        # Get intial letter template data inside of fileData object
+        fileData = None
+        with open('letter_template.txt') as f:
+            fileData = f.read()
+
+        # Check if we have a valid second name
         second_name = second_names.get('Owner 2 First Name').get(idx)
-        valid_name = secondNameValid(second_name)
+        valid_second_name = secondNameValid(second_name)
 
-
-        # if valid_name:
-
-        #     print("Cell Number: ", idx, "| First name: ", name, "| Address: ", propAddress, "| Second name: ", second_name)
-        # else:
-        #     print("Cell Number: ", idx, "| First name: ", name, "| Address: ", propAddress)
-        # print()
+        if len(name.split()) > 1:
+            # PRINTING ONLY FIRST NAME
+            print("MARK!")
+            
+        else:
+            if valid_second_name:
+                print("Cell Number: ", idx, "| First name: ", name, "| Address: ", propAddress, "| Second name: ", second_name)
+            else:
+                print("Cell Number: ", idx, "| First name: ", name, "| Address: ", propAddress)
+        print()
 
     #   if len(name.split()) > 1:
     # 		print("MARKED AS TRUST!")
