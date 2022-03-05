@@ -3,6 +3,7 @@
 import docx
 import pandas as pd
 import os
+from docx2pdf import convert
 
 #path_to_save = os.path.abspath("F:/Documents/Real Estate/Letter Campaign/3_2_22")
 path_to_save = os.path.abspath("C:/Users/alast/Documents/Real Estate/saved_letters")
@@ -67,3 +68,5 @@ if __name__ == "__main__":
         paragraph = doc.add_paragraph(fileData)
         save_name = name + "_" + lastName + "_" + "letter.docx"
         doc.save(os.path.join(path_to_save, save_name))
+
+    convert(path_to_save, os.path.join(path_to_save, "pdf"))
