@@ -4,8 +4,8 @@ import docx
 import pandas as pd
 import os
 
-#path_to_save = os.path.abspath("F:/Documents/Real Estate/Letter Campaign/3_2_22")
-path_to_save = os.path.abspath("C:/Users/alast/Documents/Real Estate/saved_letters")
+path_to_save = os.path.abspath("F:/Documents/Real Estate/Letter Campaign/3_2_22")
+#path_to_save = os.path.abspath("C:/Users/alast/Documents/Real Estate/saved_letters")
 
 def secondNameValid(name):
     # Check if this cell value is null
@@ -25,11 +25,11 @@ if __name__ == "__main__":
     info = pd.DataFrame(data, columns=['First Name', 'Property Address'])
     second_names = pd.DataFrame(data, columns=["Owner 2 First Name"]).to_dict('dict')
 
-    doc = docx.Document()
-    style = doc.styles['Normal']
-    font = style.font
-    font.name = 'Lucida Handwriting'
-    font.size = docx.shared.Pt(14)
+    # doc = docx.Document()
+    # style = doc.styles['Normal']
+    # font = style.font
+    # font.name = 'Lucida Handwriting'
+    # font.size = docx.shared.Pt(14)
 
     # fileData = None
     # with open('letter_template.txt') as f:
@@ -46,6 +46,13 @@ if __name__ == "__main__":
 
     for idx, (name, propAddress) in enumerate(zip(info.iloc[:, 0], info.iloc[:, 1])):
 
+        # Get doc object setup
+        doc = docx.Document()
+        style = doc.styles['Normal']
+        font = style.font
+        font.name = 'Lucida Handwriting'
+        font.size = docx.shared.Pt(14)
+
         # Get intial letter template data inside of fileData object
         fileData = None
         with open('letter_template.txt') as f:
@@ -55,16 +62,30 @@ if __name__ == "__main__":
         second_name = second_names.get('Owner 2 First Name').get(idx)
         valid_second_name = secondNameValid(second_name)
 
-        if len(name.split()) > 1:
-            # PRINTING ONLY FIRST NAME
+        if not valid_second_name:
+            print_name = name + ","
+            print_address = propAddress
+            fileData = fileData.replace("%%%", print_name)
+            fileData = fileData.replace("||", "")
+            fileData = fileData.replace("###", "")
+            fileData = fileData.replace("$$$", print_address)
             print("MARK!")
-            
+            print("Cell Number: ", idx, "| First name: ", name, "| Address: ", propAddress)
+
         else:
-            if valid_second_name:
-                print("Cell Number: ", idx, "| First name: ", name, "| Address: ", propAddress, "| Second name: ", second_name)
-            else:
-                print("Cell Number: ", idx, "| First name: ", name, "| Address: ", propAddress)
+            print_name = name
+            print_address = propAddress
+            second_name = second_name + ","
+            fileData = fileData.replace("%%%", print_name)
+            fileData = fileData.replace("||", "and")
+            fileData = fileData.replace("###", second_name)
+            fileData = fileData.replace("$$$", print_address)
+            print("Cell Number: ", idx, "| First name: ", name, "| Address: ", propAddress, "| Second name: ", second_name)
         print()
+
+        paragraph = doc.add_paragraph(fileData)
+        save_name = name + "-letter.docx"
+        doc.save(os.path.join(path_to_save, save_name))
 
     #   if len(name.split()) > 1:
     # 		print("MARKED AS TRUST!")
